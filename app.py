@@ -11,7 +11,7 @@ from confluent_kafka import Consumer
 from confluent_kafka import Producer
 import pickle
 
-print(pickle.__version__)
+#print(pickle.__version__)
 #getting the model store in google cloud
 url = 'https://storage.googleapis.com/project_cloud420/finalModel.pkl'
 #exception handling for the model url
