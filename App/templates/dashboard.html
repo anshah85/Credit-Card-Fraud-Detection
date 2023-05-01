@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Fantastic Five</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <script src="/static/js/dashboard.js"></script>
+  <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
+ 
+  <!-- <style>
+    /* Set height of the grid so .sidenav can be 100% (adjust as needed) */
+    .row.content {
+      height: 550px
+    }
+
+
+    .p1 {
+      font-family: "font-family: 'Brush Script MT', cursive";
+    }
+
+    /* On small screens, set height to 'auto' for the grid */
+    @media screen and (max-width: 767px) {
+      .row.content {
+        height: 100%;
+      }
+    }
+  </style> -->
+  <style>
+    div.ex1 {
+      width: 30%;
+      height: 400px;
+      padding: 10px border: thin solid black;
+    }
+    div.tw1 {
+      width: 100%;
+      height: 400px;
+      padding: 10px border: thin solid black;
+    }
+  </style>
+  <style>
+    .sidenav {
+      height: 100%;
+      width: 200px;
+      position: fixed;
+      z-index: 1;
+      top: 0;
+      left: 0;
+      background-color: rgb(0, 0, 0);
+      overflow-x: hidden;
+      padding-top: 20px;
+    }
+
+    .sidenav a, .dropdown-btn {
+      padding: 6px 8px 6px 16px;
+      text-decoration: none;
+      font-size: 20px;
+      color: #818181;
+      display: block;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+      cursor: pointer;
+      outline: none;
+    }
+
+    .sidenav a:hover, .dropdown-btn:hover {
+      color: #f1f1f1;
+    }
+    
+    .tab-content>.active {
+      display: block;
+      text-align: center;
+    }
+
+    .col-md-9{
+      padding-left: 15%;
+      width: 100%;
+    }
+    p{
+      font-size: 18px;
+    }
+    h4 {
+        font-size: 30px;
+    }
+    .well{
+      background-color: #f0efef;
+    }
+  </style>
+</head>
+
+<body >
+
+  <!-- <nav class="navbar navbar-inverse visible-xs">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">Social Media Data Science Pipeline</a>
+      </div>
+      <div class="collapse navbar-collapse" id="myNavbar">
+        <ul class="nav navbar-nav">
+          <li class="active"><a href="#">Dashboard</a></li>
+          <li><a href="#">Twitter</a></li>
+          <li><a href="#">Reddit</a></li>
+          <li><a href="#">Tumblr</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav> -->
+
+  <div class="container-fluid">
+    <div class="row content">
+      <!-- <div class="sidenav">
+        <h2>Social Media Data Science Pipeline</h2>
+        <ul class="nav nav-pills nav-stacked">
+          <li class="active"><a href="#section1">Dashboard</a></li>
+          <li><a href="/twitterPage">Twitter</a></li>
+          <li><a href="#section3">Reddit</a></li>
+          <li><a href="#section3">Tumblr</a></li>
+        </ul><br>
+      </div> -->
+      <div class="col-md-3">
+        <div class="sidenav">
+          <a data-toggle="pill" href="#home" class="active">Dashboard</a>
+          <a href="/twitterPage">Twitter</a> 
+          <a href="/tumblrPage">Tumblr</a> 
+          <a href="/redditPage">Reddit</a> 
+        </div>
+      </div>
+
+      <br>
+
+      <div class="col-md-9">
+        <div class="tab-content">
+          <div id="home" class="tab-pane fade in active">
+            <div class=" well">
+              <h4><b>Analyzing Abortion and its Ethical Dilemma</b> </h4>
+              <p class="p1">Social media has become a way to express our views and support what we care about. In the past
+                decade, we have seen exponential growth in data. Twitter is the most widely used microblogging platform,
+                followed by Reddit and Tumblr. Twitter has more than a billion posts per week and millions of posts on
+                Reddit and Tumblr, which is why we have inclined/destined our research on data from these platforms.
+                Traditional surveys are expensive and time taking. In order to diligently understand people’s responses, we
+                are collecting data from these websites. We have fetched, processed, and analyzed the real-time data pulled
+                over the past two weeks with the developer API of the platforms. This report includes people’s responses to
+                the law, and its impact on life and community. We have visualized the number of posts made by users and
+                their geographical locations. Although people post data in high volume we have seen an unprecedented spike
+                in the number of posts for the election period.
+              </p>
+            </div>
+            <div class="row">
+              <div class="col-sm-3">
+                <div class="well">
+                  <h4>Twitter Count</h4>
+                  <!-- <p>{{tw_count}}</p> -->
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="well">
+                  <h4>Reddit Count</h4>
+                  <!-- <p>{{rd_count}}</p> -->
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="well">
+                  <h4>Tumblr count</h4>
+                  <!-- <p>{{tm_count}}</p> -->
+                </div>
+              </div>
+              <div class="col-sm-3">
+                <div class="well">
+                  <h4>Total Data Collected</h4>
+                  <!-- <p>{{total_count}}</p> -->
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-4">
+                <div class="well">
+                  <label>Twitter graph</label>
+                  <!-- <form method="get" action="/twitter_all_data"> -->
+                  <div width="100px" height="250px" style="border: thin solid black">
+                    <div class="tw1" id="tw_chart">
+                      <!-- <img src = "{{plot_url}}"></img> -->
+                      <script type='text/javascript'>
+                        var layout = {
+                          //autosize: true,
+                          width: 500,
+                          height: 500,
+                          paper_bgcolor: '#7f7f7f',
+                          plot_bgcolor: '#c7c7c7'
+                        };
+                        // var graphs = {{ plot_url| safe}};
+                        // Plotly.plot('tw_chart', graphs, layout = layout);
+                      </script>
+                    </div>
+                  </div>
+                <!-- </form> -->
+                </div>
+              </div>
+              <div class="col-sm-4">
+                <!-- <div class="well">
+                  <form method="post" action="/reddit">
+                    <h4>Enter the number of top domains you want to see</h4>
+                    <input type="text" name="days" placeholder="Enter the count here"><br>
+                    <input type="submit" name="Submit">
+                  </form>
+                  <div width="100px" height="100px" style="border: thin solid black">
+                    <div class="ex1" id="chart">
+                      
+                      <script type='text/javascript'>
+                        var layout = {
+                          autosize: true,
+                          // width: 500,
+                          // height: 500,
+                          // margin: {
+                          //   l: 50,
+                          //   r: 50,
+                          //   b: 100,
+                          //   t: 100,
+                          //   pad: 2
+                          // },
+                          paper_bgcolor: '#7f7f7f',
+                          plot_bgcolor: '#c7c7c7'
+                        };
+                        var graphs = {{ graphJSON2| safe}};
+                        Plotly.plot('chart', graphs, layout = layout);
+        
+                      </script>
+                      <!-- <iframe src="bar.htm" style="border:none;" title="Iframe Example"></iframe> -->
+                      <!-- </div>
+                </div>
+                <div class="col-sm-4">
+                  <div class="well">
+                    <p>Text</p> 
+                  </div>
+                </div>
+              </div> -->
+                      <div class="well">
+                        <label>Reddit graph</label>
+                        <!-- <form method="get" action="/twitter_all_data"> -->
+                        <div width="100px" height="250px" style="border: thin solid black">
+                          <div class="rd" id="rd_chart">
+                            <!-- <img src = "{{plot_url}}"></img> -->
+                            <script type='text/javascript'>
+                              var layout = {
+                                //autosize: true,
+                                width: 500,
+                                height: 500,
+                                paper_bgcolor: '#7f7f7f',
+                                plot_bgcolor: '#c7c7c7'
+                              };
+                              // var graphs = {{ plot_reddit| safe}};
+                              // Plotly.plot('rd_chart', graphs, layout = layout);
+                            </script>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-sm-4">
+                      <div class="well">
+                        <label>Tumblr graph</label>
+                        <!-- <form method="get" action="/twitter_all_data"> -->
+                        <div width="100px" height="250px" style="border: thin solid black">
+                          <div class="tw1" id="tm_chart">
+                            <!-- <img src = "{{plot_url}}"></img> -->
+                            <script type='text/javascript'>
+                              var layout = {
+                                // autosize: true,
+                                width: 500,
+                                height: 500,
+                                paper_bgcolor: '#7f7f7f',
+                                plot_bgcolor: '#c7c7c7'
+                              };
+                              var graphs = {{ transactionsJSON| safe}};
+                              Plotly.plot('tm_chart', graphs, layout = layout);
+                            </script>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+            </div>
+          </div>
+        </div>
+
+</body>
+
+</html>
