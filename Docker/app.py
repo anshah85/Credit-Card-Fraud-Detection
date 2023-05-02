@@ -40,10 +40,10 @@ def read_ccloud_config(config_url):
 # reading configuration defined for the kafka
 
 
-props = read_ccloud_config(read_ccloud_config(config_file_url))
+props = read_ccloud_config(config_file_url)
 props["group.id"] = "python-group-1"
 props["auto.offset.reset"] = "earliest"
-producer_props = read_ccloud_config("client.properties")
+# producer_props = read_ccloud_config("client.properties")
 producer = Producer(props)
 
 consumer = Consumer(props)
