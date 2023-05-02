@@ -51,7 +51,7 @@ consumer.subscribe(["transactions_raw"])
 i=0
 try:
     while True:
-        msg = consumer.poll()
+        msg = consumer.poll(5)
         if msg is not None and msg.error() is None:
             i+=1
             # print(msg.value().decode('utf-8'))
