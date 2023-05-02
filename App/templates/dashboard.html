@@ -92,21 +92,21 @@
             <div class="row">
               <div class="col-sm-4">
                 <div class="well">
-                  <label>Twitter graph</label>
+                  <label>Fraud by category graph</label>
                  
                   <div width="100px" height="250px" style="border: thin solid black">
                     <div class="tw1" id="tw_chart">
                       <!-- <img src = "{{plot_url}}"></img> -->
                       <script type='text/javascript'>
                         var layout = {
-                          //autosize: true,
+                          autosize: true,
                           width: 500,
                           height: 500,
                           paper_bgcolor: '#7f7f7f',
                           plot_bgcolor: '#c7c7c7'
                         };
-                        // var graphs = {{ plot_url| safe}};
-                        // Plotly.plot('tw_chart', graphs, layout = layout);
+                        var graphs = {{ cat| safe}};
+                        Plotly.plot('tw_chart', graphs, layout = layout);
                       </script>
                     </div>
                   </div>
@@ -114,52 +114,15 @@
                 </div>
               </div>
               <div class="col-sm-4">
-                <!-- <div class="well">
-                  <form method="post" action="/reddit">
-                    <h4>Enter the number of top domains you want to see</h4>
-                    <input type="text" name="days" placeholder="Enter the count here"><br>
-                    <input type="submit" name="Submit">
-                  </form>
-                  <div width="100px" height="100px" style="border: thin solid black">
-                    <div class="ex1" id="chart">
-                      
-                      <script type='text/javascript'>
-                        var layout = {
-                          autosize: true,
-                          // width: 500,
-                          // height: 500,
-                          // margin: {
-                          //   l: 50,
-                          //   r: 50,
-                          //   b: 100,
-                          //   t: 100,
-                          //   pad: 2
-                          // },
-                          paper_bgcolor: '#7f7f7f',
-                          plot_bgcolor: '#c7c7c7'
-                        };
-                        var graphs = {{ graphJSON2| safe}};
-                        Plotly.plot('chart', graphs, layout = layout);
-        
-                      </script>
-                      <!-- <iframe src="bar.htm" style="border:none;" title="Iframe Example"></iframe> -->
-                      <!-- </div>
-                </div>
-                <div class="col-sm-4">
-                  <div class="well">
-                    <p>Text</p> 
-                  </div>
-                </div>
-              </div> -->
-                      <div class="well">
-                        <label>Reddit graph</label>
+                       <div class="well">
+                        <label>Fraud and Non-Fraud Transactions</label>
                         <!-- <form method="get" action="/twitter_all_data"> -->
                         <div width="100px" height="250px" style="border: thin solid black">
                           <div class="rd" id="rd_chart">
                             <!-- <img src = "{{plot_url}}"></img> -->
                             <script type='text/javascript'>
                               var layout = {
-                                //autosize: true,
+                                autosize: true,
                                 width: 500,
                                 height: 500,
                                 paper_bgcolor: '#7f7f7f',
@@ -174,7 +137,7 @@
                     </div>
                     <div class="col-sm-4">
                       <div class="well">
-                        <label>Tumblr graph</label>
+                        <label>Test graph</label>
                         <!-- <form method="get" action="/twitter_all_data"> -->
                         <div width="100px" height="250px" style="border: thin solid black">
                           <div class="tw1" id="tm_chart" >
