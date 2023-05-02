@@ -116,7 +116,7 @@ def get_transaction_category_metrics():
                     {
                     "$eq": [
                         "$is_fraud",
-                        True
+                        "1"
                     ]
                     },
                     1,
@@ -139,6 +139,47 @@ def get_transaction_category_metrics():
             res=jsonify(results=[result for result in agg_result])
             redis_client.set(reqstring, res.get_data() )
             redis_client.expire(reqstring, TTL)
+            return res.get_data()
+        else:
+            return redis_client.get(reqstring)
+    except Exception as e:
+        return "server error "+str(e), 500
+
+
+@app.route("/transactions/job/metrics", methods=["GET"])
+def get_transaction_job_metrics():
+    pipeline = [
+        {
+            "$group": {
+            "_id": "$job",
+            "totalcount": {
+                "$sum": 1
+            },
+            "fraudCount": { "$sum": { "$cond": [{ "$eq": ["$is_fraud", "1"] }, 1, 0] } }
+            }
+        },
+        {
+            "$sort": {
+            "fraudCount": -1
+            }
+        },
+
+        {
+            "$limit":10
+        }
+    ]
+
+    reqstring="/transactions/job/metrics"
+    try:
+        if not redis_client.exists(reqstring):
+            collection_transactions=db["transactions"]
+            agg_result=collection_transactions.aggregate(pipeline)
+
+            # print(agg_result)
+
+            res=jsonify(results=[result for result in agg_result])
+            redis_client.set(reqstring, res.get_data() )
+            redis_client.expire(reqstring, 10)
             return res.get_data()
         else:
             return redis_client.get(reqstring)
