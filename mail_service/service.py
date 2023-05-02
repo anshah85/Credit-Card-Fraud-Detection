@@ -8,7 +8,8 @@ from confluent_kafka import Producer
 import urllib.request
 from confluent_kafka import Consumer
 from pymongo import MongoClient
-
+from pymongo.server_api import ServerApi
+import time
 
 email_sender="raghuvararora@gmail.com"
 password="vhhpcrklorwlgedj"
@@ -42,34 +43,39 @@ def get_database():
     client = MongoClient(uri,server_api=ServerApi('1'))
     return client["User"]
 
-response = urllib.request.urlopen(config_url)
+# response = urllib.request.urlopen(config_url)
 
 
-consumer = Consumer(response)
-
+props=read_ccloud_config(config_url)
+props["group.id"] = "python-group-2"
+props["auto.offset.reset"] = "earliest"
+consumer = Consumer(props)
+consumer.subscribe([topic_name])
 db_client=get_database()
 
-userDetails = db_client["userDetails"]
+userDetails = db_client["UserDetails"]
 
 subject="ALERT: Potential Malicious Transaction Detected"
 body='''fraudulent transaction detected on your account with us. Our monitoring systems have flagged a transaction that appears to be suspicious, and we want to make you aware of it as soon as possible.
 
 Details of Transaction:
 
-Transaction amount: %s
+Transaction amount: $%s
 Date and Time of transaction: %s
 Location: %s
 '''
 
-
-
-while True:
-    try:
-        msg=consumer.poll()
+try:
+    while True:
+        print("LISTENING FOR TRANSACTIONS")
+        msg=consumer.poll(5)
         if msg is not None and msg.error() is None:
             input_str = msg.value().decode('utf-8')
             data=json.loads(input_str)
             user=userDetails.find_one({"cc_num":data["cc_num"]})
+            print(user)
+            if(user==None):
+                continue
             em=EmailMessage()
             em["from"]=email_sender
             em["to"]=user["mail"]
@@ -79,9 +85,9 @@ while True:
             with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=context) as smtp:
                 smtp.login(email_sender, password)
                 smtp.sendmail(email_sender, receiver, em.as_string())
-    except Exception as e:
-        print(e)
-        consumer.close()
+except Exception as e:
+    print(e)
+    consumer.close()
 
 
 
