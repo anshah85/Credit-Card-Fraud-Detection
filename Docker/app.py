@@ -48,11 +48,13 @@ producer = Producer(props)
 
 consumer = Consumer(props)
 consumer.subscribe(["transactions_raw"])
+i=0
 try:
     while True:
         msg = consumer.poll()
         if msg is not None and msg.error() is None:
-            print(msg.value().decode('utf-8'))
+            i+=1
+            # print(msg.value().decode('utf-8'))
             input_str = msg.value().decode('utf-8')
             data=json.loads(input_str)
             del data['']
@@ -66,7 +68,7 @@ try:
             data['age']=dt.date.today().year-data['dob'].dt.year
             data=data[['category','amt','gender','age','is_fraud']]
             data=data.drop("is_fraud", axis='columns')
-            print(data.shape)
+            # print(data.shape)
             data=pd.get_dummies(data, drop_first=True)
             row = np.array(['health_fitness', 100, 'F', 32])
 
@@ -82,9 +84,10 @@ try:
 
             
             encoded_row=encoded_row.reshape(1,-1)
-            predicted=model2.predict(encoded_row)
+            # predicted=model2.predict(encoded_row)
             
-           
+            if(i%1000==0):
+                print (data)
         # time.sleep(0.1)
 
 except KeyboardInterrupt:
