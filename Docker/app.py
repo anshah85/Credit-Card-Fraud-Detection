@@ -15,6 +15,7 @@ import pickle
 #getting the model store in google cloud
 url = 'https://storage.googleapis.com/project_cloud420/finalModel.pkl'
 #exception handling for the model url
+config_file_url="https://storage.googleapis.com/project_cloud420/client.properties"
 try:
     with urllib.request.urlopen(url) as f:
         data = f.read()
@@ -22,21 +23,24 @@ except urllib.error.URLError as e:
     print("Error opening URL:", e)
     sys.exit(1)
 
+
 #loading the model
 model2 = pickle.loads(data)
 #reading the config file name client.properties
-def read_ccloud_config(config_file):
+def read_ccloud_config(config_url):
     conf = {}
-    with open(config_file) as fh:
+    
+    with urllib.request.urlopen(config_url) as fh:
         for line in fh:
-            line = line.strip()
+            line = line.decode('utf-8').strip()
             if len(line) != 0 and line[0] != "#":
                 parameter, value = line.strip().split('=', 1)
                 conf[parameter] = value.strip()
-
     return conf
 # reading configuration defined for the kafka
-props = read_ccloud_config("client.properties")
+
+
+props = read_ccloud_config(read_ccloud_config(config_file_url))
 props["group.id"] = "python-group-1"
 props["auto.offset.reset"] = "earliest"
 producer_props = read_ccloud_config("client.properties")
@@ -54,6 +58,9 @@ try:
             del data['']
             producer.produce(topic="transactions_labeled", key=None, value=json.dumps(data))
             producer.flush()
+            if(data["is_fraud"]=="1"):
+                producer.produce(topic="transactions_fraud", key=None, value=json.dumps(data))
+                producer.flush()
             data=pd.json_normalize(data)
             data['dob']=pd.to_datetime(data['dob'])
             data['age']=dt.date.today().year-data['dob'].dt.year
