@@ -179,12 +179,52 @@ def get_transaction_job_metrics():
 
             res=jsonify(results=[result for result in agg_result])
             redis_client.set(reqstring, res.get_data() )
+            redis_client.expire(reqstring, TTL)
+            return res.get_data()
+        else:
+            return redis_client.get(reqstring)
+    except Exception as e:
+        return "server error "+str(e), 500
+
+
+
+@app.route("/transactions/time/metrics", methods=["GET"])
+def get_transaction_time_metrics():
+    pipeline = [
+        {
+            "$group": {
+                "_id": {"$hour": {"$toDate": "$trans_date_trans_time"}},
+                "total": {"$sum": 1},
+                "frauds": {"$sum": {"$cond": [{"$eq": ["$is_fraud", "1"]}, 1, 0]}}
+            }
+        },
+        {
+            "$project": {
+                "_id": 0,
+                "hour": "$_id",
+                "fraud_percentage": {"$trunc": [{"$multiply": [{"$divide": ["$frauds", "$total"]}, 100]}, 2]}
+            }
+        },
+
+    ]
+
+    reqstring="/transactions/time/metrics"
+    try:
+        if not redis_client.exists(reqstring):
+            collection_transactions=db["transactions"]
+            agg_result=collection_transactions.aggregate(pipeline)
+            res=jsonify(results=[result for result in agg_result])
+            redis_client.set(reqstring, res.get_data() )
             redis_client.expire(reqstring, 10)
             return res.get_data()
         else:
             return redis_client.get(reqstring)
     except Exception as e:
         return "server error "+str(e), 500
+
+
+
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0",port=5000,debug=True)
