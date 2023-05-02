@@ -85,7 +85,7 @@ try:
             predicted=model2.predict(encoded_row)
             
            
-        time.sleep(10)
+        # time.sleep(0.1)
 
 except KeyboardInterrupt:
     pass
