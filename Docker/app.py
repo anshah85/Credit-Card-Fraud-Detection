@@ -51,6 +51,7 @@ try:
             print(msg.value().decode('utf-8'))
             input_str = msg.value().decode('utf-8')
             data=json.loads(input_str)
+            del data['']
             producer.produce(topic="transactions_labeled", key=None, value=json.dumps(data))
             producer.flush()
             data=pd.json_normalize(data)
