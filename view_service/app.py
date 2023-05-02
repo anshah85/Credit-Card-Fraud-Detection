@@ -7,7 +7,7 @@ import logging
 
 logging.basicConfig(filename="logs.txt")
 app = Flask(__name__)
-TTL=600
+TTL=60
 def get_database():
 
     # Configure MongoDB connection
@@ -32,7 +32,7 @@ def get_redis():
     host='redis-16311.c57.us-east-1-4.ec2.cloud.redislabs.com',
     port=16311,
     password='biSw53IihqlNggEqqsUK6BMlFuMd9SGZ')
-    r.set("key","value")
+    r.set("test","value")
     return r
 
 redis_client=get_redis()
@@ -62,7 +62,7 @@ def get_transaction_metrics():
             fraud=collection_transactions.count_documents({"is_fraud":"1"})
 
             # transactions=collection_transactions.find({},{'_id': 0})
-            res=jsonify(notFraud=notFraud, totalTransactions=totalTransactions,fraud=fraud)
+            res=jsonify(notFraud=notFraud, totalTransactions=totalTransactions,fraudCount=fraud)
             redis_client.set(reqstring, res.get_data() )
             redis_client.expire(reqstring, TTL)
             return res.get_data()
@@ -110,7 +110,7 @@ def get_transaction_category_metrics():
             "total": {
                 "$sum": 1
             },
-            "is_fraud": {
+            "fraudCount": {
                 "$sum": {
                 "$cond": [
                     {
