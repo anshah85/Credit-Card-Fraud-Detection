@@ -44,7 +44,7 @@ def get_transactions():
         # print(db.list_collections())
         collection_transactions=db["transactions"]
         # collection_transactions
-        transactions=collection_transactions.find({},{'_id': 0})
+        transactions=collection_transactions.find({"is_fraud":"1"},{'_id': 0})
 
         return jsonify(transactions=[user for user in transactions])
     except Exception as e:
