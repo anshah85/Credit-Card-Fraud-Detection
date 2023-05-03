@@ -58,15 +58,11 @@ try:
             input_str = msg.value().decode('utf-8')
             data=json.loads(input_str)
             del data['']
-            num=random.randint(0,99)
-            if(num<=1):
-                data["is_fraud"]="1"
             producer.produce(topic="transactions_labeled", key=None, value=json.dumps(data))
             producer.flush()
             if(data["is_fraud"]=="1"):
                 producer.produce(topic="transactions_fraud", key=None, value=json.dumps(data))
-                producer.flush()
-            continue
+                producer.flush()           
             data=pd.json_normalize(data)
             data['dob']=pd.to_datetime(data['dob'])
             data['age']=dt.date.today().year-data['dob'].dt.year
