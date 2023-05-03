@@ -94,7 +94,7 @@
     <div class="tab-content">
       <div id="home" class="tab-pane fade in active">
         <div class=" well">
-          <h2><b>Credit card Fraud Detection using cloud</b> </h2>
+          <h2><b>Transaction Anomaly Detection</b> </h2>
           <p class="p1">
           </p>
         </div>
@@ -102,7 +102,7 @@
         <div class="row">
           <div class="col-sm-4">
             <div class="well">
-              <label>Fraud by category graph</label>
+              <label>Fraud based on Geo location in USA</label>
 
               <div width="100px" height="250px" style="border: thin solid black">
                 <div class="rd" id="state_chart">
@@ -126,10 +126,10 @@
           </div>
           <div class="col-sm-4">
             <div class="well">
-              <label>Fraud and Non-Fraud Transactions</label>
+              <label>Fraud on basis of gender</label>
               <!-- <form method="get" action="/twitter_all_data"> -->
-              <div width="100px" height="400px" style="border: thin solid black">
-                <div class="rd" id="count_chart">
+              <div width="100px" height="250px" style="border: thin solid black">
+                <div class="rd" id="gender_chart">
                   <!-- <img src = "{{plot_url}}"></img> -->
                   <script type='text/javascript'>
                     var layout = {
@@ -140,8 +140,8 @@
                       plot_bgcolor: '#c7c7c7',
                     };
 
-                    var graphs = {{ count| safe}};
-                    Plotly.plot('count_chart', graphs, layout = layout);
+                    var graphs = {{ gender| safe}};
+                    Plotly.plot('gender_chart', graphs, layout = layout);
                   </script>
                 </div>
               </div>
@@ -149,10 +149,10 @@
           </div>
           <div class="col-sm-4">
             <div class="well">
-              <label>Test graph</label>
+              <label>Fraud Based on categories</label>
               <!-- <form method="get" action="/twitter_all_data"> -->
               <div width="100px" height="250px" style="border: thin solid black">
-                <div class="rd" id="time_chart">
+                <div class="rd" id="categories">
                   <!-- <img src = "{{plot_url}}"></img> -->
                   <script type='text/javascript'>
                     var layout = {
@@ -164,7 +164,7 @@
                     };
 
                     var graphs = {{ cat| safe}};
-                    Plotly.plot('time_chart', graphs, layout = layout);
+                    Plotly.plot('categories', graphs, layout = layout);
                   </script>
                 </div>
               </div>
@@ -174,7 +174,7 @@
         <div class="row">
           <div class="col-sm-4">
             <div class="well">
-              <label>Fraud by Profession graph</label>
+              <label>Fraud based on geo-location</label>
 
               <div width="100px" height="250px" style="border: thin solid black">
                 <div class="rd" id="prof_chart">
@@ -219,7 +219,7 @@
           </div>
           <div class="col-sm-4">
             <div class="well">
-              <label>Test graph</label>
+              <label>Fraud based on Time of Day</label>
               <!-- <form method="get" action="/twitter_all_data"> -->
               <div width="100px" height="250px" style="border: thin solid black">
                 <div class="rd" id="tm_chart1">
