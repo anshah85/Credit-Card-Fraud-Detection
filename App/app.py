@@ -75,27 +75,30 @@ def get_category_chart():
     non_fraud_counts = []
     if responseCategory.status_code == 200:
         dataCat = json.loads(responseCategory.content)
-        # print(dataCat)
         for result in dataCat["results"]:
+            category = result["_id"]
+            fraud_count = result["fraudCount"]
+            non_fraud_count = result["total"]
+            total_count = fraud_count + non_fraud_count
+            
+            # Calculate the percentage of fraud and non-fraud records for the category
+            fraud_percentage = fraud_count / total_count * 100
+           
+            
+            # Add the category and percentage to the categories list
             categories.append(result["_id"])
-            fraud_counts.append(result["fraudCount"])
-            non_fraud_counts.append(result["total"])
-        # Create a trace for the fraud counts histogram
+            
+            # Add the counts to the respective lists
+            fraud_counts.append(fraud_count)
+           
+
+        # Create the traces for the histogram
         fraud_trace = go.Bar(
             x=categories,
             y=fraud_counts,
             name='Fraud',
-            marker_color='red',
-            orientation='v'
-        )
-
-        # Create a trace for the non-fraud counts histogram
-        non_fraud_trace = go.Bar(
-            x=categories,
-            y=non_fraud_counts,
-            name='Non-Fraud',
             marker_color='green',
-            orientation='v'
+           
         )
 
         # Create the layout for the histogram
@@ -105,10 +108,12 @@ def get_category_chart():
             xaxis=dict(title='Category'),
             yaxis=dict(title='Count'),
         )
+
         # Combine the traces and layout into a figure
-        fig = go.Figure(data=[fraud_trace, non_fraud_trace], layout=layout)
+        fig = go.Figure(data=[fraud_trace], layout=layout)
         graphCat = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
         return graphCat
+
 def get_job():
     url = "http://149.125.110.45:5000/transactions/job/metrics"
     response = requests.get(url)
@@ -149,7 +154,7 @@ def get_time():
             hour.append(result["hour"])
             
         df = pd.DataFrame({"fraud_percentage": fraudPercent, "hour": hour})
-        fig = px.line(df, x="hour", y="fraud_percentage") # corrected the x and y variables
+        fig = px.bar(df, x="hour", y="fraud_percentage") # corrected the x and y variables
         graphTime = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
         return graphTime
     else:
@@ -177,6 +182,14 @@ def get_state():
                             color='is_fraud',
                             color_continuous_scale="Viridis_r", 
                             scope="usa")
+        fig.update_layout(
+            # title_text='Fraud Transactions by State',
+            # geo_scope='usa',
+            # autosize=True,
+            margin= {
+                "l": 0,"r":0,"b":0,"t":0
+            }
+        )
         graphState = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
         return graphState
     else:

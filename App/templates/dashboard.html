@@ -104,7 +104,7 @@
             <div class="well">
               <label>Fraud by category graph</label>
 
-              <div width="100px" height="250px" style="border: thin solid red">
+              <div width="100px" height="250px" style="border: thin solid black">
                 <div class="rd" id="state_chart">
                   <!-- <img src = "{{plot_url}}"></img> -->
                   <script type='text/javascript'>
@@ -239,6 +239,32 @@
               </div>
             </div>
           </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="well">
+              <label>Fraud by Profession graph</label>
+
+              <div width="100px" height="250px" style="border: thin solid black">
+                <div class="rd" id="map1_chart">
+                  <!-- <img src = "{{plot_url}}"></img> -->
+                  <script type='text/javascript'>
+                    var layout = {
+                      autosize: true,
+                      // width: 500,
+                      // height: 500,
+                      paper_bgcolor: '#7f7f7f',
+                      plot_bgcolor: '#c7c7c7'
+                    };
+                    var graphs = {{ state| safe}};
+                    Plotly.plot('map1_chart', graphs, layout = layout);
+                  </script>
+                </div>
+              </div>
+              <!-- </form> -->
+            </div>
+          </div>
+                   
         </div>
       </div>
     </div>
