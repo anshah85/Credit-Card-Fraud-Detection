@@ -18,7 +18,7 @@ template_path = os.path.join(project_root, 'templates')
 app = Flask(__name__, template_folder=template_path)
 
 def get_transactions():
-    url = "http://149.125.108.55:5000/transactions"
+    url = "http://149.125.110.45:5000/transactions"
     response = requests.get(url)
 
     if response.status_code == 200:
@@ -38,7 +38,7 @@ def get_transactions():
         return None
 
 def get_fraud_chart():
-    urlCount = "http://149.125.108.55:5000/transactions/metrics"
+    urlCount = "http://149.125.110.45:5000/transactions/metrics"
     responseCount = requests.get(urlCount)
 
     fraud_count = 0
@@ -46,7 +46,7 @@ def get_fraud_chart():
     total_transactions = 0
     if responseCount.status_code == 200:
         dataCount = json.loads(responseCount.content)
-        print(dataCount)
+        # print(dataCount)
         fraud_count = dataCount['fraudCount']
         not_fraud_count = dataCount['notFraud']
         total_transactions = dataCount['totalTransactions']
@@ -67,7 +67,7 @@ def get_fraud_chart():
         return None
 
 def get_category_chart():
-    urlCategory = "http://149.125.108.55:5000/transactions/category/metrics"
+    urlCategory = "http://149.125.110.45:5000/transactions/category/metrics"
     responseCategory = requests.get(urlCategory)
 
     categories = []
@@ -75,7 +75,7 @@ def get_category_chart():
     non_fraud_counts = []
     if responseCategory.status_code == 200:
         dataCat = json.loads(responseCategory.content)
-        print(dataCat)
+        # print(dataCat)
         for result in dataCat["results"]:
             categories.append(result["_id"])
             fraud_counts.append(result["fraudCount"])
@@ -109,18 +109,99 @@ def get_category_chart():
         fig = go.Figure(data=[fraud_trace, non_fraud_trace], layout=layout)
         graphCat = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
         return graphCat
+def get_job():
+    url = "http://149.125.110.45:5000/transactions/job/metrics"
+    response = requests.get(url)
+
+    if response.status_code == 200:
+        data = json.loads(response.content)
+        
+        profession = []
+        fraudCount = []
+        totalCount = []
+        for result in data['results']:
+            if '' in result:
+                del result['']
+            profession.append(result["_id"])
+            fraudCount.append(result["fraudCount"])
+            totalCount.append(result["totalcount"]) # corrected the variable name
+            
+        df = pd.DataFrame({"_id": profession, "fraudCount": fraudCount})
+        fig = px.line(df, x="_id", y="fraudCount")
+        graphProfession = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+        return graphProfession
+    else:
+        print('Error in getting response from the url')
+        return None
+def get_time():
+    url = "http://149.125.110.45:5000/transactions/time/metrics"
+    response = requests.get(url)
+
+    if response.status_code == 200:
+        data = json.loads(response.content)
+        
+        fraudPercent = []
+        hour = []
+        for result in data['results']:
+            if '' in result:
+                del result['']
+            fraudPercent.append(result["fraud_percentage"])
+            hour.append(result["hour"])
+            
+        df = pd.DataFrame({"fraud_percentage": fraudPercent, "hour": hour})
+        fig = px.line(df, x="hour", y="fraud_percentage") # corrected the x and y variables
+        graphTime = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+        return graphTime
+    else:
+        print('Error in getting response from the url')
+        return None
+
+def get_state():
+    url = "http://149.125.110.45:5000/transactions"
+    response = requests.get(url)
+    if response.status_code == 200:
+        data = json.loads(response.content)        
+        transactions = []
+        for transaction in data['transactions']:
+            if '' in transaction:
+                del transaction['']
+            transactions.append((transaction["state"], int(transaction["is_fraud"])))
+        df = pd.DataFrame(transactions, columns=['state', 'is_fraud'])
+        fraud_df = df.groupby('state')['is_fraud'].sum().reset_index()
+        # get state codes to use in the choropleth map
+        state_codes = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/2011_us_ag_exports.csv')['code']
+        final_df = pd.merge(fraud_df, state_codes, left_on='state', right_on='code')
+        fig = px.choropleth(final_df, 
+                            locations='code', 
+                            locationmode="USA-states", 
+                            color='is_fraud',
+                            color_continuous_scale="Viridis_r", 
+                            scope="usa")
+        graphState = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+        return graphState
+    else:
+        print('Error in getting response from the url')
+        return None
+
 
 @app.route('/')
 def route():
     graphJSON=get_transactions()
     graphCount = get_fraud_chart()
     graphCat = get_category_chart()
+    graphProfession = get_job()
+    graphTime = get_time()
+    graphState = get_state()
     return render_template('dashboard.html',
                             transactionsJSON=graphJSON, 
-                            count=graphCount, cat=graphCat)
+                            count=graphCount, cat=graphCat
+                            ,prof=graphProfession
+                            ,time=graphTime
+                            ,state = graphState
+                            )
 
 if __name__ == '__main__':
-     app.run(debug=True, port=8000, host='149.125.108.55')
-  #  app.run(host='192.168.1.183', port=8000, debug=True)
+     app.run(debug=True, port=8000, host='149.125.110.45')
+  #  app.run(host='149.125.110.45', port=8000, debug=True)
 
 # kill $(lsof -t -i:8080) ---------to kill process at 5000
